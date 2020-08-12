@@ -6,7 +6,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// MustSetup the func to build log instance
+//设置日志实例
+//@reviser sam@2020-08-12 11:53:49
 func MustSetup(logLevel string) *logrus.Logger {
 	var (
 		level logrus.Level
@@ -19,7 +20,7 @@ func MustSetup(logLevel string) *logrus.Logger {
 
 	logInstance := logrus.New()
 	logInstance.SetLevel(level)
-	logInstance.SetFormatter(new(logrus.JSONFormatter))
+	//logInstance.SetFormatter(new(logrus.JSONFormatter))
 	logInstance.SetOutput(os.Stdout)
 
 	return logInstance

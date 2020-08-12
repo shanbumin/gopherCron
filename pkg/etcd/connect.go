@@ -12,6 +12,8 @@ import (
 	"github.com/coreos/etcd/clientv3"
 )
 
+//使用etcd的经典构造啊
+//@reviser  sam@2020-08-12 14:15:24
 type TaskManager struct {
 	client  *clientv3.Client
 	kv      clientv3.KV

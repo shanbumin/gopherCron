@@ -1,0 +1,12 @@
+一、context.go:
+1.每张表对应的结构体公共继承的结构体commonFields
+2.commonFields的provider属性提供了对db以及log的操作
+3.commonFields的table属性可以指明表名
+
+二、provider.go
+1.为安装数据库初始化而准备的接口SqlStore
+2.不仅与db打交道，而且还实现了安装接口，什么找它都能拿到的结构体实例SqlProvider
+3.启动mysql的入口MustSetup
+三、project.go|project_relevance.go|task_log.go|user.go
+上述是与表相关的文件
+

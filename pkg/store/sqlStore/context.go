@@ -7,6 +7,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//-----------------------  SqlProviderInterface 接口 -------------------------------
+//provider.go中存在实现该接口的结构体
+//@reviser sam@2020-07-22 13:38:25
+type SqlProviderInterface interface {
+	GetMaster() *gorm.DB  //主引擎
+	GetReplica() *gorm.DB  //副本引擎们
+	Logger() *logrus.Logger //日志
+}
+//----------------------  commonFields  结构体 --------------------------------------------------------------
+//每张表对应的结构体公共继承的结构体
 type commonFields struct {
 	provider SqlProviderInterface
 	table    string
@@ -23,7 +33,6 @@ func (c *commonFields) GetTable() string {
 func (c *commonFields) SetTable(table string) {
 	c.table = table
 }
-
 func (c *commonFields) GetMap(selector selection.Selector) ([]map[string]interface{}, error) {
 	db := parseSelector(c.GetReplica(), selector, true)
 	rows, err := db.Table(c.GetTable()).Rows()
@@ -64,6 +73,9 @@ func (c *commonFields) GetReplica() *gorm.DB {
 	return c.provider.GetReplica()
 }
 
+//检测每个表对应结构体是否准备ok了
+//@todo 只要provider以及table不为空就算过关了
+//@reviser sam@2020-07-22 16:00:01
 func (c *commonFields) CheckSelf() {
 	if c.provider == nil {
 		panic("can not found provider")
@@ -76,8 +88,3 @@ func (c *commonFields) CheckSelf() {
 	c.provider.Logger().Infof("store %s is ok!", c.GetTable())
 }
 
-type SqlProviderInterface interface {
-	GetMaster() *gorm.DB
-	GetReplica() *gorm.DB
-	Logger() *logrus.Logger
-}

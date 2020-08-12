@@ -19,6 +19,8 @@ type comm struct {
 	etcd EtcdManager
 }
 
+//涵盖整个任务的调度方法的接口
+//@reviser sam@2020-08-12 11:46:40
 type CommonInterface interface {
 	SetTaskRunning(task common.TaskInfo) error
 	SetTaskNotRunning(task common.TaskInfo) error

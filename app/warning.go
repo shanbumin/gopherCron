@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//----------------------------  Warner interface ----------------------------------------------
 type Warner interface {
 	Warning(data WarningData) error
 }
@@ -14,9 +15,6 @@ type warning struct {
 	logger *logrus.Logger
 }
 
-func NewDefaultWarner(logger *logrus.Logger) *warning {
-	return &warning{logger: logger}
-}
 
 func (a *warning) Warning(data WarningData) error {
 	if data.Type == WarningTypeSystem {
@@ -27,3 +25,8 @@ func (a *warning) Warning(data WarningData) error {
 
 	return nil
 }
+//-----------------------------------------------------------------------------------------------
+func NewDefaultWarner(logger *logrus.Logger) *warning {
+	return &warning{logger: logger}
+}
+

@@ -2,25 +2,17 @@ package sqlStore
 
 import (
 	"fmt"
-
-	"github.com/holdno/gopherCron/common"
 	"github.com/holdno/gopherCron/pkg/store"
 
 	"github.com/holdno/gocommons/selection"
+	"github.com/holdno/gopherCron/common"
 	"github.com/jinzhu/gorm"
 )
 
+//-------------------------  projectStore 结构体 ----------------------------------------------------------------------
+//gc_project表
 type projectStore struct {
 	commonFields
-}
-
-//NewProjectStore
-func NewProjectStore(provider SqlProviderInterface) store.ProjectStore {
-	repo := &projectStore{}
-
-	repo.SetProvider(provider)
-	repo.SetTable("gc_project")
-	return repo
 }
 
 func (s *projectStore) AutoMigrate() {
@@ -85,3 +77,13 @@ func (s *projectStore) UpdateRelation(projectID int64, relation string) error {
 	}
 	return nil
 }
+
+//---------------------NewProjectStore---------------------------------------------------------------------------------
+func NewProjectStore(provider SqlProviderInterface) store.ProjectStore {
+	repo := &projectStore{}
+
+	repo.SetProvider(provider)
+	repo.SetTable("gc_project")
+	return repo
+}
+

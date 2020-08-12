@@ -7,6 +7,9 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+//todo 这里就是针对初始化的几个表对应结构体的接口声明
+//因为初始化的时候可能使用mysql，也可以使用mongodb的额
+
 // Commons defined func which can be used by other stores
 type Commons interface {
 	GetMap(selector selection.Selector) ([]map[string]interface{}, error)
@@ -15,6 +18,10 @@ type Commons interface {
 	CheckSelf()
 	AutoMigrate()
 }
+
+
+//下面是几张必须初始化的表
+
 
 type ProjectStore interface {
 	Commons

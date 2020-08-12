@@ -2,25 +2,15 @@ package sqlStore
 
 import (
 	"fmt"
-
-	"github.com/holdno/gopherCron/common"
 	"github.com/holdno/gopherCron/pkg/store"
 
 	"github.com/holdno/gocommons/selection"
+	"github.com/holdno/gopherCron/common"
 	"github.com/jinzhu/gorm"
 )
-
+//--------------------------------------------------------------------------------------------------------------------
 type taskLogStore struct {
 	commonFields
-}
-
-//NewProjectStore
-func NewTaskLogStore(provider SqlProviderInterface) store.TaskLogStore {
-	repo := &taskLogStore{}
-
-	repo.SetProvider(provider)
-	repo.SetTable("gc_task_log")
-	return repo
 }
 
 func (s *taskLogStore) AutoMigrate() {
@@ -62,4 +52,13 @@ func (s *taskLogStore) Clean(tx *gorm.DB, selector selection.Selector) error {
 	}
 
 	return nil
+}
+
+//------------------------------------------------------ NewProjectStore -----------------------------------------------
+func NewTaskLogStore(provider SqlProviderInterface) store.TaskLogStore {
+	repo := &taskLogStore{}
+
+	repo.SetProvider(provider)
+	repo.SetTable("gc_task_log")
+	return repo
 }

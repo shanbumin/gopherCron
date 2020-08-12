@@ -2,26 +2,20 @@ package sqlStore
 
 import (
 	"fmt"
-
-	"github.com/holdno/gopherCron/common"
 	"github.com/holdno/gopherCron/pkg/store"
 
 	"github.com/holdno/gocommons/selection"
+	"github.com/holdno/gopherCron/common"
 	"github.com/jinzhu/gorm"
 )
 
+//--------------------------------------------------------------------------------------------------------------------
+//gc_project_relevance表
 type projectRelevanceStore struct {
 	commonFields
 }
 
-//NewProjectStore
-func NewProjectRelevanceStore(provider SqlProviderInterface) store.ProjectRelevanceStore {
-	repo := &projectRelevanceStore{}
 
-	repo.SetProvider(provider)
-	repo.SetTable("gc_project_relevance")
-	return repo
-}
 
 func (s *projectRelevanceStore) AutoMigrate() {
 	if err := s.GetMaster().Table(s.GetTable()).AutoMigrate(&common.ProjectRelevance{}).Error; err != nil {
@@ -67,4 +61,15 @@ func (s *projectRelevanceStore) GetList(selector selection.Selector) ([]*common.
 	}
 
 	return res, nil
+}
+
+
+
+//------------------------------ NewProjectStore  ----------------------------------------------------------------------
+func NewProjectRelevanceStore(provider SqlProviderInterface) store.ProjectRelevanceStore {
+	repo := &projectRelevanceStore{}
+
+	repo.SetProvider(provider)
+	repo.SetTable("gc_project_relevance")
+	return repo
 }

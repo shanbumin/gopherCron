@@ -79,9 +79,12 @@ func resolveServerAddress(addr []string) string {
 	}
 }
 
+//启动service
+//@reviser sam@2020-07-21 10:21:26
 func Run(opts *SetupOptions) error {
-	// 加载配置
+	//资源启动
 	srv := app.NewApp(opts.ConfigPath)
+
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -92,7 +95,7 @@ func Run(opts *SetupOptions) error {
 			})
 		}
 	}()
-
+	//api启动
 	apiServer(srv, srv.GetConfig().Deploy)
 
 	os.Setenv("GOPHERENV", srv.GetConfig().Deploy.Environment)

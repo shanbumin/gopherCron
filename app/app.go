@@ -26,7 +26,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//-------------------------------- App接口 -----------------------------------------------------------------------------
 type App interface {
+	//gc_project---------------------------------------------------
 	CreateProject(tx *gorm.DB, p common.Project) (int64, error)
 	GetProject(pid int64) (*common.Project, error)
 	GetUserProjects(uid int64) ([]*common.Project, error)
@@ -35,6 +37,8 @@ type App interface {
 	CheckUserProject(pid, uid int64) (*common.Project, error) // 确认项目是否属于该用户
 	UpdateProject(pid int64, title, remark string) error
 	DeleteProject(tx *gorm.DB, pid, uid int64) error
+
+	//gc_task_info
 	SaveTask(task *common.TaskInfo, opts ...clientv3.OpOption) (*common.TaskInfo, error)
 	DeleteTask(pid int64, tid string) (*common.TaskInfo, error)
 	SetTaskRunning(task common.TaskInfo) error
@@ -76,6 +80,7 @@ type App interface {
 	Warner
 }
 
+//-------------------------------- EtcdManager接口----------------------------------------------------------------------
 type EtcdManager interface {
 	Client() *clientv3.Client
 	KV() clientv3.KV
@@ -86,10 +91,17 @@ type EtcdManager interface {
 	Inc(key string) (int64, error)
 }
 
+//---------------------------------
+
+
+
 func GetApp(c *gin.Context) App {
 	return c.MustGet(common.APP_KEY).(App)
 }
 
+//app结构体实例整个生命线的核心
+//@todo 不是很喜欢这样的构造
+//@reviser sam@2020-08-12 11:45:30
 type app struct {
 	store   sqlStore.SqlStore
 	logger  *logrus.Logger
@@ -112,35 +124,41 @@ func WithWarning(w Warner) AppOptions {
 	}
 }
 
+//传递配置文件路径，返回一个新的app
+//@reviser  sam@2020-07-21 10:29:08
+
 func NewApp(configPath string, opts ...AppOptions) App {
 	var err error
-
+    //加载读取配置文件
 	conf := config.InitServiceConfig(configPath)
+	//创建app
 	app := new(app)
+	//配置
 	app.cfg = conf
+	//日志logrus
 	app.logger = logger.MustSetup(conf.LogLevel)
+	//安装初始化sqlStore
 	app.store = sqlStore.MustSetup(conf.Mysql, app.logger, true)
-
+	//todo opts是对app进一步处理的函数集合，service的启动是没有这个额外需求的
 	for _, opt := range opts {
 		opt(app)
 	}
-
+	//设置默认Warner
 	if app.Warner == nil {
 		app.Warner = NewDefaultWarner(app.logger)
 	}
-
+	//初始化jwt
 	jwt.InitJWT(conf.JWT)
-
+	//初始化etcd
 	app.logger.Info("start to connect etcd ...")
 	if app.etcd, err = etcd.Connect(conf.Etcd); err != nil {
 		panic(err)
 	}
-	app.logger.Info("connected to etcd")
+	app.logger.Info("--------connected to etcd-----------------")
 	app.CommonInterface = NewComm(app.etcd)
-
+	//分布式高效ID(全局唯一)生成器
 	utils.InitIDWorker(1)
-
-	// 自动清理任务
+	//每12小时自动清理任务日志
 	go func() {
 		t := time.NewTicker(time.Hour * 12)
 		for {
